@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h3>Minhas Tarefas</h3>
+    <input id="campo" placeholder="Nova tarefa...">
+    <button onclick="salvar()">Salvar</button>
+    <ul id="lista"></ul>
+
+    <script>
+        const URL = "http://localhost:5000/tarefas";
+
+        // Pede pro Python listar (GET)
+        async function carregar() {
+            const res = await fetch(URL);
+            const dados = await res.json();
+            document.getElementById("lista").innerHTML = dados.map(t => `<li>${t.descricao}</li>`).join("");
+        }
+
+        // Manda pro Python salvar (POST)
+        async function salvar() {
+            const texto = document.getElementById("campo").value;
+            await fetch(URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ descricao: texto })
+            });
+            document.getElementById("campo").value = "";
+            carregar();
+        }
+
+        carregar(); // Executa ao abrir a página
+    </script>
+</body>
+</html>
